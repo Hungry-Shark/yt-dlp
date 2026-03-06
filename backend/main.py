@@ -131,6 +131,9 @@ async def get_video_info(request: URLRequest):
                 return f"{size:.1f} TB"
             
             for f in formats:
+                if not f.get("url"):
+                    continue
+
                 if f.get('acodec') != 'none':
                     has_audio = True
                 
@@ -239,8 +242,10 @@ async def download_media(request: DownloadRequest, background_tasks: BackgroundT
 
     try:
         if request.format == "video":
-            q = request.quality.replace('p', '') if request.quality and request.quality != "best" else None
-            
+            q = None
+            if request.quality and request.quality != "best":
+                # The frontend sends strings like "1080p (14.2 MB)" now, so we need to isolate just "1080"
+                q = request.quality.split('p')[0].strip()
             # The 'mp4' extension constraint sometimes fails for specific qualities when using cookies
             # It's safer to let yt-dlp pick the best video and audio streams up to the target height,
             # and then merge them into an mp4 container.
