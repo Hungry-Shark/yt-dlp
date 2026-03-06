@@ -17,8 +17,14 @@ app = FastAPI(title="VaultDL Backend", version="1.0")
 
 CORS_ORIGIN = os.getenv("CORS_ORIGIN", "http://localhost:5173")
 DOWNLOAD_DIR = os.getenv("DOWNLOAD_DIR", "/tmp/ytdl_downloads")
+YOUTUBE_COOKIES = os.getenv("YOUTUBE_COOKIES", "")
 
 os.makedirs(DOWNLOAD_DIR, exist_ok=True)
+
+if YOUTUBE_COOKIES:
+    # Save cookies to a file temporarily so yt-dlp can use it
+    with open("/tmp/youtube_cookies.txt", "w") as f:
+        f.write(YOUTUBE_COOKIES)
 
 app.add_middleware(
     CORSMiddleware,
@@ -102,6 +108,9 @@ async def get_video_info(request: URLRequest):
         'no_warnings': True,
     }
     
+    if YOUTUBE_COOKIES:
+        ydl_opts['cookiefile'] = "/tmp/youtube_cookies.txt"
+        
     try:
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(request.url, download=False)
@@ -223,6 +232,9 @@ async def download_media(request: DownloadRequest, background_tasks: BackgroundT
         'progress_hooks': [internal_progress_hook],
         'nocolor': True,
     }
+    
+    if YOUTUBE_COOKIES:
+        ydl_opts['cookiefile'] = "/tmp/youtube_cookies.txt"
 
     try:
         if request.format == "video":
@@ -335,6 +347,9 @@ async def list_captions(request: URLRequest):
         'no_warnings': True,
         'listsubtitles': True,
     }
+    if YOUTUBE_COOKIES:
+        ydl_opts['cookiefile'] = "/tmp/youtube_cookies.txt"
+        
     try:
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(request.url, download=False)
@@ -377,6 +392,8 @@ def download_captions(request: CaptionRequest, background_tasks: BackgroundTasks
             'format': dl_fmt,
         }],
     }
+    if YOUTUBE_COOKIES:
+        ydl_opts['cookiefile'] = "/tmp/youtube_cookies.txt"
     
     try:
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
