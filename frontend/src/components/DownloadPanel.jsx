@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { getApiUrl, getWsUrl } from '../api';
 
 export default function DownloadPanel({ data, url }) {
     const defaultVideoQuality = data.video_qualities?.length > 0 ? data.video_qualities[0].split('p')[0] + 'p' : 'best';
@@ -12,8 +13,8 @@ export default function DownloadPanel({ data, url }) {
     React.useEffect(() => {
         let ws = null;
         if (data?.id) {
-            const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-            ws = new WebSocket(`${protocol}//${window.location.host}/api/ws/progress/${data.id}`);
+            const wsUrl = getWsUrl(`/api/ws/progress/${data.id}`);
+            ws = new WebSocket(wsUrl);
 
             ws.onmessage = (event) => {
                 const msg = event.data;
@@ -79,7 +80,7 @@ export default function DownloadPanel({ data, url }) {
 
             if (data?.id) {
                 try {
-                    await fetch('/api/cancel', {
+                    await fetch(getApiUrl('/api/cancel'), {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ video_id: data.id })
@@ -99,7 +100,7 @@ export default function DownloadPanel({ data, url }) {
         setAbortController(controller);
 
         try {
-            const res = await fetch('/api/download', {
+            const res = await fetch(getApiUrl('/api/download'), {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ url, format, quality, video_id: data.id }),

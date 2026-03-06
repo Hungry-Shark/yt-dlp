@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { getApiUrl } from '../api';
 
 export default function CaptionPanel({ url }) {
     const [loading, setLoading] = useState(true);
@@ -27,7 +28,7 @@ export default function CaptionPanel({ url }) {
         const fetchCaptions = async () => {
             setLoading(true);
             try {
-                const res = await fetch('/api/captions/list', {
+                const res = await fetch(getApiUrl('/api/captions/list'), {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ url })
@@ -69,7 +70,7 @@ export default function CaptionPanel({ url }) {
         const actualLang = isAuto ? selectedLang.replace('auto_', '') : selectedLang;
 
         try {
-            const res = await fetch('/api/captions/download', {
+            const res = await fetch(getApiUrl('/api/captions/download'), {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({

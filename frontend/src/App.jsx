@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import VideoInfo from './components/VideoInfo'
+import { getApiUrl } from './api'
 
 function App() {
     const [url, setUrl] = useState('')
@@ -20,7 +21,7 @@ function App() {
         setVideoData(null)
 
         try {
-            const res = await fetch('/api/info', {
+            const res = await fetch(getApiUrl('/api/info'), {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ url: urlToAnalyze.trim() })
