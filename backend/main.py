@@ -130,9 +130,6 @@ async def get_video_info(request: URLRequest):
                 return f"{size:.1f} TB"
             
             for f in formats:
-                if not f.get("url"):
-                    continue
-
                 if f.get('acodec') != 'none':
                     has_audio = True
                 
