@@ -106,7 +106,6 @@ async def get_video_info(request: URLRequest):
         'download': False,
         'quiet': True,
         'no_warnings': True,
-        'format': 'bestvideo+bestaudio/best', # Avoid strict format restrictions during info extraction
     }
     
     if YOUTUBE_COOKIES:
@@ -114,7 +113,7 @@ async def get_video_info(request: URLRequest):
         
     try:
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-            info = ydl.extract_info(request.url, download=False)
+            info = ydl.extract_info(request.url, download=False, process=False)
             
             formats = info.get("formats", [])
             video_qualities = []
@@ -357,7 +356,7 @@ async def list_captions(request: URLRequest):
         
     try:
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-            info = ydl.extract_info(request.url, download=False)
+            info = ydl.extract_info(request.url, download=False, process=False)
             subs = info.get('subtitles', {})
             auto_subs = info.get('automatic_captions', {})
             
