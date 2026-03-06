@@ -109,6 +109,45 @@
     align-items: center;
 }
 
+.row-label {
+    font-weight: 500;
+    width: 80px;
+    flex-shrink: 0;
+}
+
+.row-flex {
+    flex: 1;
+    min-width: 150px;
+}
+
+.row-actions {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+@media (max-width: 600px) {
+    .panel-row {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.5rem;
+    }
+    .row-label {
+        width: 100%;
+    }
+    .row-flex {
+        width: 100%;
+    }
+    .row-actions {
+        width: 100%;
+        margin-top: 0.25rem;
+    }
+    .row-actions > button,
+    .row-actions > div {
+        flex: 1;
+    }
+}
+
 .select-input {
     background: var(--panel-bg);
     border: 1px solid var(--border-color);

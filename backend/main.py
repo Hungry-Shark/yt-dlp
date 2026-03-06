@@ -26,6 +26,37 @@ if YOUTUBE_COOKIES:
     with open("/tmp/youtube_cookies.txt", "w") as f:
         f.write(YOUTUBE_COOKIES)
 
+# Ensure Deno is available for yt-dlp JS challenge decryption on Render
+import urllib.request
+import zipfile
+import stat
+import platform
+
+DENO_DIR = "/tmp/deno_bin"
+if not os.path.exists(os.path.join(DENO_DIR, "deno")) and not os.path.exists(os.path.join(DENO_DIR, "deno.exe")):
+    try:
+        os.makedirs(DENO_DIR, exist_ok=True)
+        zip_path = "/tmp/deno.zip"
+        
+        if platform.system() == "Windows":
+            deno_url = "https://github.com/denoland/deno/releases/download/v1.41.0/deno-x86_64-pc-windows-msvc.zip"
+        elif platform.system() == "Darwin":
+            deno_url = "https://github.com/denoland/deno/releases/download/v1.41.0/deno-x86_64-apple-darwin.zip"
+        else:
+            deno_url = "https://github.com/denoland/deno/releases/download/v1.41.0/deno-x86_64-unknown-linux-gnu.zip"
+            
+        urllib.request.urlretrieve(deno_url, zip_path)
+        with zipfile.ZipFile(zip_path, 'r') as zip_ref:
+            zip_ref.extractall(DENO_DIR)
+        
+        if platform.system() != "Windows":
+            os.chmod(os.path.join(DENO_DIR, "deno"), stat.S_IRWXU)
+    except Exception as e:
+        print("Failed to auto-install deno:", e)
+
+if DENO_DIR not in os.environ.get("PATH", ""):
+    os.environ["PATH"] = DENO_DIR + os.pathsep + os.environ.get("PATH", "")
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[CORS_ORIGIN],

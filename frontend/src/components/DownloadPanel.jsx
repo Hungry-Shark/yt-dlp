@@ -188,21 +188,23 @@ export default function DownloadPanel({ data, url }) {
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
                 <div className="panel-row">
-                    <span style={{ fontWeight: 500, width: '80px' }}>Video</span>
-                    <select
-                        className="select-input"
-                        value={selectedQuality}
-                        onChange={(e) => setSelectedQuality(e.target.value)}
-                        disabled={downloading !== null}
-                    >
-                        {data.video_qualities?.map(q => {
-                            // q can be "1080p (24.0 MB)". The backend needs "1080"
-                            const val = q.split('p')[0] + 'p';
-                            return <option key={q} value={val}>{q}</option>
-                        })}
-                        {!data.video_qualities?.length && <option value="best">Best available</option>}
-                    </select>
-                    <div style={{ display: 'flex', gap: '0.5rem' }}>
+                    <span className="row-label">Video</span>
+                    <div className="row-flex">
+                        <select
+                            className="select-input"
+                            value={selectedQuality}
+                            onChange={(e) => setSelectedQuality(e.target.value)}
+                            disabled={downloading !== null}
+                            style={{ width: '100%' }}
+                        >
+                            {data.video_qualities?.map(q => {
+                                const val = q.split('p')[0] + 'p';
+                                return <option key={q} value={val}>{q}</option>
+                            })}
+                            {!data.video_qualities?.length && <option value="best">Best available</option>}
+                        </select>
+                    </div>
+                    <div className="row-actions">
                         <button
                             className="btn"
                             onClick={() => handleDownload('video', selectedQuality)}
@@ -219,28 +221,33 @@ export default function DownloadPanel({ data, url }) {
                 </div>
 
                 <div className="panel-row">
-                    <span style={{ fontWeight: 500, width: '80px' }}>Audio</span>
-                    <span style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', flex: 1 }}>192kbps MP3</span>
-                    <button
-                        className="btn btn-secondary"
-                        onClick={() => handleDownload('audio')}
-                        disabled={downloading !== null || !data.has_audio}
-                        style={{ opacity: data.has_audio ? 1 : 0.5 }}
-                    >
-                        {downloading === 'audio' ? <><div className="spinner"></div> Please wait...</> : 'Download MP3'}
-                    </button>
+                    <span className="row-label">Audio</span>
+                    <span className="row-flex" style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>192kbps MP3</span>
+                    <div className="row-actions">
+                        <button
+                            className="btn btn-secondary"
+                            onClick={() => handleDownload('audio')}
+                            disabled={downloading !== null || !data.has_audio}
+                            style={{ opacity: data.has_audio ? 1 : 0.5, width: '100%' }}
+                        >
+                            {downloading === 'audio' ? <><div className="spinner"></div> Please wait...</> : 'Download MP3'}
+                        </button>
+                    </div>
                 </div>
 
                 <div className="panel-row">
-                    <span style={{ fontWeight: 500, width: '80px' }}>Cover</span>
-                    <span style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', flex: 1 }}>Highest resolution JPEG</span>
-                    <button
-                        className="btn btn-secondary"
-                        onClick={() => handleDownload('thumbnail')}
-                        disabled={downloading !== null}
-                    >
-                        {downloading === 'thumbnail' ? <><div className="spinner"></div> Fetching...</> : 'Download JPEG'}
-                    </button>
+                    <span className="row-label">Cover</span>
+                    <span className="row-flex" style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>Highest resolution JPEG</span>
+                    <div className="row-actions">
+                        <button
+                            className="btn btn-secondary"
+                            onClick={() => handleDownload('thumbnail')}
+                            disabled={downloading !== null}
+                            style={{ width: '100%' }}
+                        >
+                            {downloading === 'thumbnail' ? <><div className="spinner"></div> Fetching...</> : 'Download JPEG'}
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>

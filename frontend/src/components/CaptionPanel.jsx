@@ -148,7 +148,7 @@ export default function CaptionPanel({ url }) {
                 <p style={{ color: 'var(--text-secondary)', margin: 0 }}>No captions available for this video.</p>
             ) : (
                 <div className="panel-row">
-                    <div className="custom-select" ref={dropdownRef}>
+                    <div className="custom-select row-flex" ref={dropdownRef}>
                         <button
                             className="custom-select-button"
                             onClick={() => setDropdownOpen(!dropdownOpen)}
@@ -198,25 +198,27 @@ export default function CaptionPanel({ url }) {
                         )}
                     </div>
 
-                    <select
-                        className="select-input"
-                        value={selectedFormat}
-                        onChange={(e) => setSelectedFormat(e.target.value)}
-                        disabled={downloading}
-                        style={{ width: '80px', minWidth: '80px' }}
-                    >
-                        <option value="srt">SRT</option>
-                        <option value="vtt">VTT</option>
-                        <option value="txt">TXT</option>
-                    </select>
+                    <div className="row-actions">
+                        <select
+                            className="select-input"
+                            value={selectedFormat}
+                            onChange={(e) => setSelectedFormat(e.target.value)}
+                            disabled={downloading}
+                            style={{ width: '80px', minWidth: '80px' }}
+                        >
+                            <option value="srt">SRT</option>
+                            <option value="vtt">VTT</option>
+                            <option value="txt">TXT</option>
+                        </select>
 
-                    <button
-                        className="btn btn-secondary"
-                        onClick={handleDownload}
-                        disabled={downloading || !selectedLang}
-                    >
-                        {downloading ? <><div className="spinner"></div></> : 'Download'}
-                    </button>
+                        <button
+                            className="btn btn-secondary"
+                            onClick={handleDownload}
+                            disabled={downloading || !selectedLang}
+                        >
+                            {downloading ? <><div className="spinner"></div></> : 'Download'}
+                        </button>
+                    </div>
                 </div>
             )}
         </div>
