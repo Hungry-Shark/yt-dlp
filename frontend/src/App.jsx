@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import VideoInfo from './components/VideoInfo'
+import ThemeToggle from './components/ThemeToggle'
 import { getApiUrl } from './api'
 
 function App() {
@@ -56,6 +57,7 @@ function App() {
             <header className="header">
                 <h1 className="title">VaultDL</h1>
                 <p className="tagline">Extract video, audio, and captions seamlessly</p>
+                <ThemeToggle />
             </header>
 
             <form className="search-container" onSubmit={(e) => { e.preventDefault(); handleAnalyze(url); }}>

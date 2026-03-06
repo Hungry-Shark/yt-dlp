@@ -1,25 +1,72 @@
 :root {
-  --bg-color: #0f111a;
-  --panel-bg: #1a1d2d;
-  --text-primary: #e2e8f0;
-  --text-secondary: #94a3b8;
-  --accent-color: #ef4444;
-  --accent-hover: #dc2626;
-  --border-color: #2e344e;
-  --glass-bg: rgba(26, 29, 45, 0.7);
+  /* Bright Theme Default */
+  --bg-color: #f0fdf4;
+  --bg-gradient: linear-gradient(135deg, #eef2ff 0%, #ede9fe 50%, #fce7f3 100%);
+  --panel-bg: rgba(255, 255, 255, 0.4);
+  --glass-border: rgba(255, 255, 255, 0.5);
+  --text-primary: #1e293b;
+  --text-secondary: #475569;
+  --accent-color: #ec4899;
+  --accent-hover: #db2777;
+  --border-color: rgba(0, 0, 0, 0.08);
+  --glass-bg: rgba(255, 255, 255, 0.6);
   --success-color: #10b981;
   --radius-md: 12px;
   --radius-lg: 16px;
   --font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  --shadow-lg: 0 10px 40px -10px rgba(0, 0, 0, 0.1);
+}
+
+.dark {
+  /* Dark Frosted Glass Theme */
+  --bg-color: #0f111a;
+  --bg-gradient: linear-gradient(135deg, #0f111a 0%, #151828 50%, #1a1625 100%);
+  --panel-bg: rgba(26, 29, 45, 0.5);
+  --glass-border: rgba(255, 255, 255, 0.05);
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --accent-color: #ef4444;
+  --accent-hover: #dc2626;
+  --border-color: rgba(255, 255, 255, 0.08);
+  --glass-bg: rgba(26, 29, 45, 0.7);
+  --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 10px 40px -10px rgba(0, 0, 0, 0.4);
+}
+
+/* View Transition API Fixes for Radial Wipe */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+::view-transition-old(root) {
+  z-index: 1;
+}
+
+::view-transition-new(root) {
+  z-index: 2;
+}
+
+.dark::view-transition-old(root) {
+  z-index: 2;
+}
+
+.dark::view-transition-new(root) {
+  z-index: 1;
 }
 
 body {
   margin: 0;
   padding: 0;
   font-family: var(--font-family);
-  background-color: var(--bg-color);
+  background: var(--bg-color);
+  background-image: var(--bg-gradient);
+  background-attachment: fixed;
   color: var(--text-primary);
   min-height: 100vh;
+  transition: background-color 0.1s ease, color 0.1s ease;
 }
 
 * {
@@ -37,14 +84,46 @@ body {
   text-align: center;
   margin-bottom: 3rem;
   animation: fadeIn 0.8s ease-out;
+  position: relative;
+}
+
+.theme-toggle {
+  position: absolute;
+  top: -10px;
+  right: 0;
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+  color: var(--text-primary);
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.2s ease;
+  z-index: 50;
+}
+
+.theme-toggle:hover {
+  transform: scale(1.1) rotate(15deg);
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+}
+
+.theme-toggle:active {
+  transform: scale(0.95);
 }
 
 .title {
   font-size: 3.5rem;
   font-weight: 800;
   margin: 0;
-  background: linear-gradient(135deg, #ff6b6b, #ef4444);
+  background: linear-gradient(135deg, var(--accent-color), var(--accent-hover));
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
   letter-spacing: -1px;
 }
@@ -56,13 +135,27 @@ body {
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes slideUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .slide-up {
@@ -105,7 +198,7 @@ body {
 }
 
 .btn-secondary:hover:not(:disabled) {
-  background: rgba(255,255,255,0.05);
+  background: rgba(255, 255, 255, 0.05);
   box-shadow: none;
 }
 
@@ -143,22 +236,26 @@ body {
 .spinner {
   width: 18px;
   height: 18px;
-  border: 2px solid rgba(255,255,255,0.3);
+  border: 2px solid rgba(255, 255, 255, 0.3);
   border-radius: 50%;
   border-top-color: white;
   animation: spin 1s linear infinite;
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .card {
   background: var(--panel-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border-radius: var(--radius-lg);
   overflow: hidden;
-  border: 1px solid var(--border-color);
-  box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-lg);
   margin-bottom: 2rem;
 }
 
