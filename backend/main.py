@@ -239,15 +239,14 @@ async def download_media(request: DownloadRequest, background_tasks: BackgroundT
     try:
         if request.format == "video":
             q = request.quality.replace('p', '') if request.quality and request.quality != "best" else None
+            
+            # The 'mp4' extension constraint sometimes fails for specific qualities when using cookies
+            # It's safer to let yt-dlp pick the best video and audio streams up to the target height,
+            # and then merge them into an mp4 container.
             if not q:
-                ydl_opts['format'] = 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best'
+                ydl_opts['format'] = 'bestvideo+bestaudio/best'
             else:
-                qd = int(q)
-                # If downloading low res (like 144p/360p), grab a highly compressed low-res audio too so 144p isn't 150MB
-                audio_fm = 'bestaudio[abr<50][ext=m4a]' if qd <= 360 else 'bestaudio[ext=m4a]'
-                
-                # Try specific limits, with fallbacks down to lowest available
-                ydl_opts['format'] = f'bestvideo[height<={q}][ext=mp4]+{audio_fm}/best[height<={q}][ext=mp4]/best'
+                ydl_opts['format'] = f'bestvideo[height<={q}]+bestaudio/best[height<={q}]/best'
             
             ydl_opts['merge_output_format'] = 'mp4'
 
