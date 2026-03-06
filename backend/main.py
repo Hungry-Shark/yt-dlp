@@ -106,6 +106,7 @@ async def get_video_info(request: URLRequest):
         'download': False,
         'quiet': True,
         'no_warnings': True,
+        'format': 'bestvideo+bestaudio/best', # Avoid strict format restrictions during info extraction
     }
     
     if YOUTUBE_COOKIES:
