@@ -144,7 +144,7 @@ async def get_video_info(request: URLRequest):
         
     try:
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-            info = ydl.extract_info(request.url, download=False, process=False)
+            info = ydl.extract_info(request.url, download=False, process=True)
             
             formats = info.get("formats", [])
             video_qualities = []
